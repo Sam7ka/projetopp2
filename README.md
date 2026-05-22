@@ -1,5 +1,6 @@
 Olá, este deve ser o arquivo README do projeto TerminiCT.
-Os Desenvolvedores são: Samuel Henrique; Caio Sales e Jorge Henrique.
+Os Desenvolvedores são:
+Samuel Henrique; Caio Sales e Jorge Henrique.
 De modo geral, o projeto tem como objetivo ser um software de manutenção de computadores do IFPE de Jaboatão.
 Neste projeto, possuimos a idealização de uma conexão apartir de verificação lan de outros dispositivos (Computadores de laboratórios e da biblioteca) com uma atualização a cada troca de aula,
 mantendo uma consistencia e aprimorando o monitoramento da segurança e integridade de cada máquina do Campi.
