@@ -6,6 +6,3 @@ Neste projeto, possuimos a idealização de uma conexão apartir de verificaçã
 mantendo uma consistencia e aprimorando o monitoramento da segurança e integridade de cada máquina do Campi.
 Além disso, o software possui uma forma de conexão entre o discente e o Admininstrador, contendo relatos e observações sobre o ocorrido abaixo, um exemplo:
 O discente pode enviar atraves do software, um aviso que a máquina 10 do lab2 não está ligando, podendo relatar o momento do ocorrido e se foi com o docente que relata.
-
-
-I <3 YUN LI
