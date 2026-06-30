@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportar Dano - TerminiCT</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { color: #333; margin-top: 0; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #d9534f; color: white; border: none; padding: 10px 15px; margin-top: 20px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background-color: #c9302c; }
+        .alerta { background-color: #dff0d8; color: #3c763d; padding: 10px; border-radius: 4px; margin-bottom: 15px; display: none; }
+        .anonimo-aviso { font-size: 12px; color: #777; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Reportar Maquina Danificada</h2>
+    <div id="mensagem-sucesso" class="alerta"></div>
+    
+    <form id="form-denuncia">
+        <label for="laboratorio">Laboratório:</label>
+        <select id="laboratorio" required>
+            <option value="">Selecione...</option>
+            <option value="Lab de Informática 1">Lab 1</option>
+            <option value="Lab de Informática 2">Lab 2</option>
+            <option value="Lab de Informática 2">Lab 3</option>
+            <option value="Lab de Informática 2">Lab 4</option>
+            <option value="Lab de Informática 2">Lab 5</option>
+            <option value="Lab de Informática 2">Lab 6</option>
+            <option value="Lab de Informática 2">Lab 7</option>
+            <option value="Lab de Informática 2">Lab 8</option>
+            <option value="Biblioteca">Biblioteca</option>
+        </select>
+
+        <label for="computador_numero">Número/Identificação do Computador:</label>
+        <input type="text" id="computador_numero" placeholder="Ex: PC-05, Etiqueta 104" required>
+
+        <label for="descricao_dano">Descrição do Problema / Dano:</label>
+        <textarea id="descricao_dano" rows="4" placeholder="Ex: Tecla 'Enter' arrancada, monitor quebrado, mouse não funciona..." required></textarea>
+
+        <button type="submit">Enviar Relato Anônimo</button>
+        <p class="anonimo-aviso">🔒 Seu relato é 100% anônimo. Não coletamos nomes, logins ou endereços IP.</p>
+    </form>
+</div>
+
+<script>
+    document.getElementById('form-denuncia').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Coleta os dados do formulário disque denuncia anonima 180
+        const dados = {
+            laboratorio: document.getElementById('laboratorio').value,
+            computador_numero: document.getElementById('computador_numero').value,
+            descricao_dano: document.getElementById('descricao_dano').value
+        };
+
+        try {
+            // Envia para o backend via fetch (a parte q havana gosta la)
+            const resposta = await fetch('/api/denuncias', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await resposta.json();
+
+            if (resposta.ok) {
+                const alerta = document.getElementById('mensagem-sucesso');
+                alerta.textContent = resultado.mensagem;
+                alerta.style.display = 'block';
+                document.getElementById('form-denuncia').reset(); // Limpa o formulário ("desnecessário", mas pq não?)
+                
+                // Esconde a mensagem após 5 segundos (só pra sim)
+                setTimeout(() => { alerta.style.display = 'none'; }, 5000);
+            } else {
+                alert('Erro: ' + resultado.erro);
+            }
+        } catch (erro) {
+            alert('Falha na comunicação com o servidor.');
+        }
+    });
+</script>
+
+</body>
+</html>
