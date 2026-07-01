@@ -7,7 +7,7 @@ app.use(express.json());
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite'
+  storage: './crud - usuario/database.sqlite'
 });
 
 const Relatorio = sequelize.define('Relatorio', {
