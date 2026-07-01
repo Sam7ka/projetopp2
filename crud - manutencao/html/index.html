@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Manutenção</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input,
+        textarea,
+        button {
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .status {
+            font-weight: bold;
+            color: orange;
+        }
+
+        .status.Resolvido {
+            color: green;
+        }
+
+        .btn-delete {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .btn-update {
+            background-color: #4da6ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Agendar Manutenção de Equipamento</h1>
+
+    <form id="painelAgendamento">
+        <input type="text" id="equipamento" placeholder="Identificação do Equipamento (ex: Termo-04)" required>
+        <textarea id="detalhes" placeholder="Insira as instruções ou defeitos para o técnico..." style="resize: none;"
+            required></textarea>
+        <button type="submit">Confirmar Agendamento</button>
+    </form>
+
+    <h2>Ordens de Serviço Ativas</h2>
+    <div id="painelOrdens"></div>
+
+    <script>
+        const caixaFormulario = document.getElementById('painelAgendamento');
+        const muralOrdens = document.getElementById('painelOrdens');
+
+        // Função para buscar relatórios do backend (READ)
+        async function obterOrdensServico() {
+            const resposta = await fetch('/api/relatorios');
+            const dadosOrdens = await resposta.json();
+
+            muralOrdens.innerHTML = '';
+            dadosOrdens.forEach(ordem => {
+                muralOrdens.innerHTML += `
+          <div class="card">
+            <h3>${ordem.maquina}</h3>
+            <p>${ordem.descricao}</p>
+            <p>Situação: <span class="status ${ordem.status}">${ordem.status}</span></p>
+            <button class="btn-delete" onclick="cancelarOrdem(${ordem.id})">Remover</button>
+          </div>
+        `;
+            });
+        }
+
+        caixaFormulario.addEventListener('submit', async (evento) => {
+            evento.preventDefault();
+            const maquina = document.getElementById('equipamento').value;
+            const descricao = document.getElementById('detalhes').value;
+
+            await fetch('/api/relatorios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ maquina, descricao })
+            });
+
+            caixaFormulario.reset();
+            obterOrdensServico();
+        });
+
+        async function modificarEstado(id, estadoAtualizado) {
+            await fetch(`/api/relatorios/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: estadoAtualizado })
+            });
+            obterOrdensServico();
+        }
+
+        async function cancelarOrdem(id) {
+            if (confirm('Tem certeza de que deseja remover este agendamento?')) {
+                await fetch(`/api/relatorios/${id}`, { method: 'DELETE' });
+                obterOrdensServico();
+            }
+        }
+
+        obterOrdensServico();
+    </script>
+</body>
+
+</html>
